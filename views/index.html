@@ -1,0 +1,63 @@
+<!DCOTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title><%= title %></title>
+    <!-- 通用样式 -->
+    <link href="/css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="control" id="control_area">
+        <!-- <button>加入</button> -->
+        <button id="support_btn">支持</button>
+        <button id="create_dream_btn">创建我的梦想</button>
+        <button id="create_dream_node_btn">新增梦想节点</button>
+        <button id="prev_dream_btn">上一个梦想</button>
+        <button id="next_dream_btn">下一个梦想</button>
+        <button class="none" id="confirm_btn">保存</button>
+    </div>
+    <div id="container_area">
+        <div class="dreams" id="list_area">
+            <div class="dream" id="content_area">
+                <% if(data.length > 0) {%>
+                <div class="dream_header">
+                    <h1 class="title"><%= data[0].title %></h1>
+                    <p class="desc"><%= data[0].description %></p>
+                </div>
+                <% } %>
+                <div id="dream_area">
+                </div>
+                <!--<div class="node">
+                    <p>我有一个梦醒，这也是本站的第一个梦想.</p>
+                    <p>我希望有一个地方能够远离城市的喧嚣，那里安静，有一片碧绿的草地或是金黄的麦田。<br>
+                    在那里我有我自己的小房子，虽不华丽，但被我精心点缀。<br>
+                    在那里我不用每天在他人的指挥下忙碌着为某些人的贪婪而服务的工作，因为我有我自己的节奏。<br>
+                    我不用去计较鸡毛蒜皮，计算柴米油盐，不用去担心收入来源，我只需要按照我自己的方式生活。<br>
+                    也许你们会责备我逃避现实，对，我确实在逃避，我觉得现在的生活糟透了，我不喜欢它。<br></p>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+var dream_index= 0;
+
+// 所有排在前10条梦想的id
+var dream_ids = "<% for(var i=0; i<data.length; i++) {%><%= data[i]._id %>,<% } %>".slice(0,-1);
+dream_ids = dream_ids? dream_ids.split(","):[];
+//TODO 标题和内容应该是和节点一起加载的
+var dream_titles = "<% for(var i=0; i<data.length; i++) {%><%= data[i].title %>|<% } %>".slice(0,-1).split("|");
+var dream_descs = "<% for(var i=0; i<data.length; i++) {%><%= data[i].title %>|<% } %>".slice(0,-1).split("|");
+
+if (dream_ids.length > 0) {
+    console.log(dream_ids);
+    var json={time:new Date().getTime()};
+    window.history.pushState(json,"","/dream/" + dream_ids[dream_index++]);
+}
+</script>
+<script src="/js/settings.js" type="text/javascript"></script>
+<script src="/js/tools.js" type="text/javascript"></script>
+<script src="/js/keyboard.js" type="text/javascript"></script>
+<script src="/js/animation.js" type="text/javascript"></script>
+<script src="/js/index.js" type="text/javascript"></script>
+</html>

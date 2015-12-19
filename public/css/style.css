@@ -1,0 +1,135 @@
+@font-face {
+  font-family: Microsoft YaHei;
+  src: url('/font/msyh/msyh.eot');
+  src: url('/font/msyh/msyh.eot?#iefix') format('embedded-opentype'), url('/font/msyh/msyh.woff') format('woff'), url('/font/msyh/msyh.ttf') format('truetype'), url('/font/msyh/msyh.svg#msyh') format('svg');
+}
+body {
+  margin: 0;
+  padding: 0;
+  font: 14px/1.8 Microsoft YaHei;
+}
+ol,
+ul,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+input,
+textarea {
+  font: 12px/1.5 Microsoft YaHei;
+  padding: 2px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+button {
+  font: 12px/1.5 Microsoft YaHei;
+  background: #fff;
+  border: 1px solid #f2f3f4;
+  color: #ccc;
+  cursor: pointer;
+  outline: none;
+}
+button:hover {
+  border-color: #ccc;
+  color: #333;
+}
+.control {
+  position: fixed;
+  z-index: 1;
+}
+.none {
+  display: none;
+}
+.node {
+  margin: 0 auto;
+  width: 250px;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  position: relative;
+}
+.view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.dreams {
+  overflow: hidden;
+}
+.dream {
+  float: left;
+  width: 100%;
+}
+.dream .dream_header {
+  margin: 0 auto;
+  width: 800px;
+}
+.dream .dream_header .title {
+  text-align: center;
+}
+.dream .dream_header .desc {
+  text-indent: 2em;
+}
+.dialog {
+  position: fixed;
+  z-index: 2;
+  border: 2px solid #ddd;
+  padding: 8px;
+  background: #fff;
+}
+.dialog .arrow-border {
+  border-style: solid;
+  border-width: 20px;
+  height: 0;
+  width: 0;
+  position: absolute;
+}
+.dialog .arrow {
+  border-style: solid;
+  border-width: 20px;
+  height: 0;
+  width: 0;
+  position: absolute;
+}
+.dialog.right .arrow-border {
+  border-color: transparent #ddd transparent transparent;
+  top: 20%;
+  left: -40px;
+}
+.dialog.right .arrow {
+  border-color: transparent #fff transparent transparent;
+  top: 20%;
+  left: -37px;
+}
+.dialog.top .arrow-border {
+  border-color: #ddd transparent transparent transparent;
+  bottom: -40px;
+  left: 20%;
+}
+.dialog.top .arrow {
+  border-color: #fff transparent transparent transparent;
+  bottom: -37px;
+  left: 20%;
+}
+.modal {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: black;
+  position: fixed;
+  z-index: 1;
+}
+.modal.fade-in {
+  opacity: 0.6;
+}
+.modal.fade-out {
+  opacity: 0;
+  -webkit-transition: opacity 5s ease-in-out;
+  transition: opacity 5s ease-in-out;
+}

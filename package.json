@@ -1,0 +1,23 @@
+{
+  "name": "dream",
+  "version": "0.0.1",
+  "devDependencies": {
+    "async": "*",
+    "ejs": "*",
+    "express": "*",
+    "express.io": "*",
+    "gulp": "^3.8.11",
+    "gulp-compass": "^2.0.4",
+    "gulp-less": "^3.0.3",
+    "less": "*",
+    "mongoose": "*",
+    "socket.io": "*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "minggang.qiu",
+  "license": "ISC",
+  "description": "A dream website.",
+  "main": "app.js"
+}
