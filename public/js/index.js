@@ -7,6 +7,7 @@ var registerTpl = '<p><input class="" type="text" placeholder="{{ NAME }}" /></p
                   '<p><input class="" type="checkbox" /> {{ AUTOSIGN }}</p>';
 
 function Win(opts) {
+
 }
 
 Win.prototype = {
@@ -339,14 +340,21 @@ function getNodeDataByDreamId(dream_id) {
         "get",
         function(data) {
             if (data.success) {
+                var contentArea = document.getElementById("content_area");
                 var content = "";
-                for (var i = 0, l = data.data.length; i < l; i++) {
-                    var tpl = "<div class='node'>{{ content }}</div>";
-                    content += tools.template(tpl, data.data[i]);
+                var dreamTpl = '<div class="dream_header">' +
+                    '<h1 class="title">{{ title }}</h1>' +
+                    '<p class="desc">{{ description }}</p>' + 
+                    '</div>' + 
+                    '<div id="dream_area">';
+                content += tools.template(dreamTpl, data.data);
+
+                for (var i = 0, l = data.data.nodes.length; i < l; i++) {
+                    var nodeTpl = "<div class='node'>{{ content }}</div>";
+                    content += tools.template(tpl, data.data.nodes[i]);
                 }
 
-                var dreamArea = document.getElementById("dream_area");
-                dreamArea.innerHTML = content;
+                contentArea.innerHTML = content;
             }
         },
         function() {
@@ -354,7 +362,7 @@ function getNodeDataByDreamId(dream_id) {
     );
 }
 
-getNodeDataByDreamId(dream_ids[0]);
+getNodeDataByDreamId(next_dream_ids[0]);
 
 function checkAccount(callback) {
     return false;
@@ -362,23 +370,31 @@ function checkAccount(callback) {
 
 var switch_state = false;
 
-function switchDream(data, callback) {
-    if (switch_state) return;
+function switchDream(data, callback, show) {
     switch_state = true;
     var contentArea = document.getElementById("content_area");
+
     containerArea.className = "view";
     listArea.style.transition = "1s ease-in-out";
     var item_width = containerArea.offsetWidth;
     contentArea.style.width = item_width;
     listArea.style.width = item_width * 2;
     var newContentArea = contentArea.cloneNode(false);
+    
+    newContentArea.innerHTML = '<div class="dream_loading">loading...</div>';
+    
     var dreamTpl = '<div class="dream_header">' +
         '<h1 class="title">{{ title }}</h1>' +
         '<p class="desc">{{ description }}</p>' + 
         '</div>' + 
         '<div id="dream_area"></div>';
     newContentArea.innerHTML = tools.template(dreamTpl, data);
-    listArea.style.transform = "translate(-"+ item_width +"px, 0)";
+    
+    // 确定切换的方向
+    var flag = "-";
+    if (show == prev) flag = "";
+
+    listArea.style.transform = "translate("+ flag + item_width +"px, 0)";
     listArea.appendChild(newContentArea);
 
     function updateTransition() {
@@ -418,7 +434,8 @@ createDreamBtn.addEventListener("click", function() {
                 "post",
                 function(data) {
                     if (data.success) {
-                       switchDream(formData, function() {
+                        if (switch_state) return;
+                        switchDream(formData, function() {
                            dream_index = 0;
                            dream_ids = [];
                            dream_titles = [];
@@ -433,7 +450,7 @@ createDreamBtn.addEventListener("click", function() {
                            // 没有拉数据做什么？
                            // getNodeDataByDreamId(dream_ids[dream_index++]);
                            switch_state = false;
-                       });
+                       }, "next");
                     }
                 },
                 function() {
@@ -510,6 +527,65 @@ confirmBtn.addEventListener("click", function() {
 nextDreamBtn.addEventListener("click", function() {
     // 切换到下一个梦想
     if (dream_index < dream_ids.length) {
+        if (switch_state) return;
+
+        var json={time:new Date().getTime()};
+        window.history.pushState(json,"","/dream/" + dream_ids[dream_index]);
+
+        if (dream_index == dream_ids.length - 1) {
+            req.ajax(
+                "http://127.0.0.1:3000/dream/" + dream_ids[dream_index] + "/next",
+                null,
+                "get",
+                function(data) {
+                    if (data.success) {
+                        // TODO 这里用并行异步请求
+                        getNodeDataByDreamId(dream_ids[dream_index]);
+                        dream_index = 0;
+                        dream_ids = [];
+                        dream_titles = [];
+                        dream_descs = [];
+                        for (var i = 0, l = data.data.length; i < l; i++) {
+                            dream_ids[i] = data.data[i]._id;
+                            dream_titles[i] = data.data[i].title;
+                            dream_descs[i] = data.data[i].description;
+                        }
+                        switch_state = false;
+                    }
+                },
+                function() {
+
+                }
+            );
+        }else{
+            switch_state = false;
+        }
+
+        var get_data_promise = new Promise(function(resolve, reject) {
+            
+        });
+        var get_ids_promise = new Promise(function(resolve, reject) {
+            getNodeDataByDreamId(dream_ids[dream_index], function(ids) {
+                resolve(ids);
+            });
+        });
+        Promise.all([get_data_promise, get_ids_promise]).then(function() {
+            
+        }, function() {});
+        switchDream(function() {
+        }, "next");
+    }
+}, false);
+
+supportBtn.addEventListener("click", function() {
+    // 支持下拉菜单
+    var dropdown = new DropDown();
+    dropdown.show();
+}, false);
+
+prevDreamBtn.addEventListener("click", function() {
+    // 切换到下一个梦想
+    if (dream_index < dream_ids.length) {
         var data = {
             title: dream_titles[dream_index],
             description: dream_descs[dream_index]
@@ -549,16 +625,9 @@ nextDreamBtn.addEventListener("click", function() {
                 getNodeDataByDreamId(dream_ids[dream_index++]);
                 switch_state = false;
             }
-        });
+        }, "prev");
     }
-}, false);
-
-supportBtn.addEventListener("click", function() {
-    // 支持下拉菜单
-    var dropdown = new DropDown();
-    dropdown.show();
-}, false);
-
+})
 
 /////////////////////////////////////////////////////////////////////////
 
